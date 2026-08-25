@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="520" viewBox="0 0 1680 520" role="img" aria-label="MAKALE KAPAK GORSELI">
+  <rect width="1680" height="520" fill="#191C1E"/>
+  <g stroke="#2A2E31" stroke-width="1">
+    <line x1="420" y1="0" x2="420" y2="520"/>
+    <line x1="840" y1="0" x2="840" y2="520"/>
+    <line x1="1260" y1="0" x2="1260" y2="520"/>
+    <line x1="0" y1="173" x2="1680" y2="173"/>
+    <line x1="0" y1="346" x2="1680" y2="346"/>
+  </g>
+  <rect x="20" y="20" width="1640" height="480" fill="none" stroke="#2A2E31" stroke-width="1"/>
+  <text x="840" y="260" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="86" letter-spacing="6" fill="#8A8A84">KDB</text>
+  <line x1="804" y1="308" x2="876" y2="308" stroke="#A88A58" stroke-width="2"/>
+  <text x="840" y="480" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" letter-spacing="4" fill="#8A8A84" opacity="0.55">MAKALE KAPAK GORSELI</text>
+</svg>

@@ -1,0 +1,7 @@
+# KDB Hukuk — robots.txt
+# TODO: Yayın öncesi gerçek alan adı ile güncellenecek
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.kdbhukuk.com/sitemap.xml

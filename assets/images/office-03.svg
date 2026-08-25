@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800" role="img" aria-label="OFIS GORSELI 03">
+  <rect width="600" height="800" fill="#EDE9DF"/>
+  <g stroke="#DDD7C9" stroke-width="1">
+    <line x1="150" y1="0" x2="150" y2="800"/>
+    <line x1="300" y1="0" x2="300" y2="800"/>
+    <line x1="450" y1="0" x2="450" y2="800"/>
+    <line x1="0" y1="266" x2="600" y2="266"/>
+    <line x1="0" y1="533" x2="600" y2="533"/>
+  </g>
+  <rect x="24" y="24" width="552" height="752" fill="none" stroke="#DDD7C9" stroke-width="1"/>
+  <text x="300" y="400" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="60" letter-spacing="6" fill="#6D6D68">KDB</text>
+  <line x1="260" y1="460" x2="340" y2="460" stroke="#A88A58" stroke-width="2"/>
+  <text x="300" y="752" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" letter-spacing="4" fill="#6D6D68" opacity="0.55">OFIS GORSELI 03</text>
+</svg>

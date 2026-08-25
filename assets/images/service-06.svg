@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="960" viewBox="0 0 720 960" role="img" aria-label="MIRAS HUKUKU">
+  <rect width="720" height="960" fill="#EDE9DF"/>
+  <g stroke="#DDD7C9" stroke-width="1">
+    <line x1="180" y1="0" x2="180" y2="960"/>
+    <line x1="360" y1="0" x2="360" y2="960"/>
+    <line x1="540" y1="0" x2="540" y2="960"/>
+    <line x1="0" y1="320" x2="720" y2="320"/>
+    <line x1="0" y1="640" x2="720" y2="640"/>
+  </g>
+  <rect x="24" y="24" width="672" height="912" fill="none" stroke="#DDD7C9" stroke-width="1"/>
+  <text x="60" y="140" font-family="Georgia, 'Times New Roman', serif" font-size="58" letter-spacing="4" fill="#A88A58">06</text>
+  <text x="360" y="500" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="82" letter-spacing="8" fill="#6D6D68">KDB</text>
+  <line x1="322" y1="552" x2="398" y2="552" stroke="#A88A58" stroke-width="2"/>
+  <text x="360" y="880" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" letter-spacing="4" fill="#6D6D68" opacity="0.6">MIRAS HUKUKU</text>
+</svg>
