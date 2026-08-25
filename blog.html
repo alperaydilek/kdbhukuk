@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>document.documentElement.classList.add("js");</script>
 
   <title>Hukuki Bilgi Merkezi | KDB Hukuk Blog</title>
   <meta name="description" content="Güncel mevzuat, hukuki süreçler ve uygulamaya ilişkin değerlendirmeler. KDB Hukuk — Av. Kaan Durali Bulut tarafından hazırlanan hukuki içerikler.">
@@ -67,8 +68,8 @@
   <header class="site-header">
     <div class="container site-header__inner">
       <a class="brand" href="index.html" aria-label="KDB Hukuk — Ana Sayfa">
-        <span class="brand__mark">KDB</span>
-        <span class="brand__suffix">Hukuk</span>
+        <span class="brand__row"><span class="brand__mark">KDB</span><span class="brand__suffix">Hukuk</span></span>
+        <span class="brand__sub">Av. Kaan Durali Bulut</span>
       </a>
 
       <nav class="site-nav" aria-label="Ana menü">
@@ -79,7 +80,7 @@
           <li><a class="site-nav__link" href="blog.html" aria-current="page">Blog</a></li>
           <li><a class="site-nav__link" href="iletisim.html">İletişim</a></li>
         </ul>
-        <a class="btn btn--ghost site-nav__cta" href="iletisim.html">İletişime Geç</a>
+        <button class="btn btn--ghost site-nav__cta" type="button" data-appointment-open>Randevu Al</button>
       </nav>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menüyü aç">
@@ -93,6 +94,12 @@
 
   <!-- Mobil menü -->
   <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+    <div class="mobile-nav__top">
+      <a class="brand brand--light" href="index.html" aria-label="KDB Hukuk — Ana Sayfa">
+        <span class="brand__row"><span class="brand__mark">KDB</span><span class="brand__suffix">Hukuk</span></span>
+        <span class="brand__sub">Av. Kaan Durali Bulut</span>
+      </a>
+    </div>
     <nav aria-label="Mobil menü">
       <ul class="mobile-nav__list">
         <li class="mobile-nav__item"><a class="mobile-nav__link" href="index.html"><span class="mobile-nav__index">01</span>Ana Sayfa</a></li>
@@ -105,6 +112,7 @@
     <div class="mobile-nav__footer">
       <span>KDB Hukuk — Av. Kaan Durali Bulut</span>
       <a href="iletisim.html">İletişim bilgileri için tıklayınız</a>
+      <button class="btn btn--light" type="button" data-appointment-open>Randevu Al</button>
     </div>
   </div>
 
@@ -154,7 +162,7 @@
           <li class="post-row reveal" data-category="gayrimenkul">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-01.svg" width="1200" height="750" alt="Kira Uyuşmazlıklarında Güncel Hukuki Süreçler makalesi kapak görseli">
+                <img src="assets/images/journal-01.jpg" width="1200" height="750" alt="Kira Uyuşmazlıklarında Güncel Hukuki Süreçler makalesi kapak görseli">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -177,7 +185,7 @@
           <li class="post-row reveal" data-reveal-delay="60" data-category="is">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-02.svg" width="1200" height="750" alt="İş Sözleşmesinin Feshi ve Çalışanın Hakları makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-02.jpg" width="1200" height="750" alt="İş Sözleşmesinin Feshi ve Çalışanın Hakları makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -200,7 +208,7 @@
           <li class="post-row reveal" data-reveal-delay="120" data-category="gayrimenkul">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-03.svg" width="1200" height="750" alt="Gayrimenkul Satışlarında Hukuki Riskler makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-03.jpg" width="1200" height="750" alt="Gayrimenkul Satışlarında Hukuki Riskler makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -223,7 +231,7 @@
           <li class="post-row reveal" data-reveal-delay="180" data-category="ceza">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-04.svg" width="1200" height="750" alt="Soruşturma Aşamasında Şüphelinin Hakları makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-04.jpg" width="1200" height="750" alt="Soruşturma Aşamasında Şüphelinin Hakları makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -246,7 +254,7 @@
           <li class="post-row reveal" data-reveal-delay="180" data-category="ticaret">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-05.svg" width="1200" height="750" alt="Limited Şirketlerde Ortaklıktan Çıkma ve Çıkarılma makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-05.jpg" width="1200" height="750" alt="Limited Şirketlerde Ortaklıktan Çıkma ve Çıkarılma makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -269,7 +277,7 @@
           <li class="post-row reveal" data-reveal-delay="180" data-category="aile">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-06.svg" width="1200" height="750" alt="Anlaşmalı Boşanma Süreci Nasıl İlerler? makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-06.jpg" width="1200" height="750" alt="Anlaşmalı Boşanma Süreci Nasıl İlerler? makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -292,7 +300,7 @@
           <li class="post-row reveal" data-reveal-delay="180" data-category="is">
             <a class="post-row__link" href="blog-detay.html">
               <div class="post-row__media">
-                <img src="assets/images/journal-07.svg" width="1200" height="750" alt="Mobbing İddialarında İspat ve Hukuki Başvuru Yolları makalesi kapak görseli" loading="lazy">
+                <img src="assets/images/journal-07.jpg" width="1200" height="750" alt="Mobbing İddialarında İspat ve Hukuki Başvuru Yolları makalesi kapak görseli" loading="lazy">
               </div>
               <div class="post-row__body">
                 <p class="entry-meta">
@@ -322,8 +330,8 @@
       <div class="site-footer__main">
         <div>
           <a class="brand" href="index.html" aria-label="KDB Hukuk — Ana Sayfa">
-            <span class="brand__mark">KDB</span>
-            <span class="brand__suffix">Hukuk</span>
+            <span class="brand__row"><span class="brand__mark">KDB</span><span class="brand__suffix">Hukuk</span></span>
+            <span class="brand__sub">Av. Kaan Durali Bulut</span>
           </a>
           <p class="site-footer__statement">Hukuki süreçlerde güvenilir ve stratejik çözüm ortağınız.</p>
         </div>
@@ -398,6 +406,43 @@
       <button class="btn btn--ghost-light" type="button" data-cookie-reject>Reddet</button>
     </div>
   </aside>
+
+  <!-- Randevu Modal -->
+  <div class="modal" id="appointment-modal" role="dialog" aria-modal="true" aria-labelledby="appointment-title" aria-hidden="true">
+    <div class="modal__backdrop" data-appointment-close></div>
+    <div class="modal__panel">
+      <button class="modal__close" type="button" aria-label="Pencereyi kapat" data-appointment-close>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <p class="eyebrow">Randevu</p>
+      <h2 class="modal__title" id="appointment-title">Randevu Al</h2>
+      <p class="modal__desc">
+        Bilgilerinizi bırakın; randevunuzu planlamak için en kısa sürede
+        sizinle iletişime geçelim.
+      </p>
+      <form class="modal__form" id="appointment-form" novalidate>
+        <div class="form__field">
+          <label class="form__label" for="ap-name">İsim Soyisim <span class="req" aria-hidden="true">*</span></label>
+          <input class="form__input" type="text" id="ap-name" name="name" autocomplete="name" required aria-required="true">
+          <p class="form__error">Lütfen isim ve soyisminizi giriniz.</p>
+        </div>
+        <div class="form__field">
+          <label class="form__label" for="ap-phone">Telefon <span class="req" aria-hidden="true">*</span></label>
+          <input class="form__input" type="tel" id="ap-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="0(5__) ___ __ __" required aria-required="true">
+          <p class="form__error">Lütfen geçerli bir telefon numarası giriniz.</p>
+        </div>
+        <div class="form__field">
+          <label class="form__label" for="ap-email">E-mail <span class="req" aria-hidden="true">*</span></label>
+          <input class="form__input" type="email" id="ap-email" name="email" autocomplete="email" required aria-required="true">
+          <p class="form__error">Lütfen geçerli bir e-posta adresi giriniz.</p>
+        </div>
+        <div class="form__submit">
+          <button class="btn" type="submit">Randevu Talebi Gönder</button>
+          <p class="form__status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script src="assets/js/navigation.js" defer></script>

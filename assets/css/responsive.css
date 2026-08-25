@@ -26,10 +26,6 @@
    <= 1024px — Tablet
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-  .hero__inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
-  }
-
   /* Hizmet grid'i: tablette 2 kolon */
   .service-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -89,15 +85,6 @@
 
   .hero::before {
     background-size: 50% 100%;
-  }
-
-  .hero__inner {
-    grid-template-columns: 1fr;
-    gap: var(--space-lg);
-  }
-
-  .hero__visual {
-    max-width: 420px;
   }
 
   .hero__meta {
@@ -312,7 +299,11 @@
    -------------------------------------------------------------------------- */
 @media (max-width: 400px) {
   .brand__mark {
-    font-size: 1.35rem;
+    font-size: 1.55rem;
+  }
+
+  .brand__sub {
+    font-size: 0.54rem;
   }
 
   .service-row__link {

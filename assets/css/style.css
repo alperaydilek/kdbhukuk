@@ -308,28 +308,57 @@ h1, h2, h3 {
   gap: var(--space-md);
 }
 
-/* Wordmark */
+/* Wordmark — iki satırlı lockup */
 .brand {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.brand__row {
   display: inline-flex;
   align-items: baseline;
   gap: 0.5rem;
-  line-height: 1;
 }
 
 .brand__mark {
   font-family: var(--font-serif);
-  font-size: 1.55rem;
+  font-size: 1.85rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: var(--color-ink);
+  transition: font-size var(--dur-base) var(--ease-smooth);
 }
 
 .brand__suffix {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: var(--ls-caps-wide);
   text-transform: uppercase;
   color: var(--color-brass);
+}
+
+.brand__sub {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.site-header.is-scrolled .brand__mark {
+  font-size: 1.55rem;
+}
+
+/* Koyu zemin varyantı (mobil menü, footer) */
+.brand--light .brand__mark {
+  color: var(--color-white);
+}
+
+.brand--light .brand__sub {
+  color: rgba(244, 241, 234, 0.55);
 }
 
 .site-nav {
@@ -457,6 +486,19 @@ h1, h2, h3 {
     visibility 0s;
 }
 
+/* Menü açıkken üst bar: solda logo (X butonu header'daki toggle) */
+.mobile-nav__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--line-light-soft);
+}
+
 .mobile-nav__list {
   list-style: none;
   display: flex;
@@ -531,6 +573,21 @@ body.nav-locked {
   overflow: hidden;
 }
 
+/* Menü açıkken header'ı overlay'in üstüne taşı: sağda X görünür,
+   soldaki logoyu overlay'in açık renkli logosu devralır */
+body.nav-open .site-header {
+  z-index: calc(var(--z-nav) + 1);
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+
+body.nav-open .site-header .brand {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* --------------------------------------------------------------------------
    06. Hero (Ana Sayfa)
    -------------------------------------------------------------------------- */
@@ -559,11 +616,11 @@ body.nav-locked {
 
 .hero__inner {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(2rem, 5vw, 6rem);
-  align-items: center;
   width: 100%;
+}
+
+.hero__content {
+  max-width: 62rem;
 }
 
 .hero__eyebrow {
@@ -571,9 +628,9 @@ body.nav-locked {
 }
 
 .hero__title {
-  font-size: var(--fs-display);
+  font-size: clamp(2.6rem, 1.7rem + 4.2vw, 5.4rem);
   font-weight: 500;
-  max-width: 15ch;
+  max-width: 16ch;
   letter-spacing: -0.01em;
 }
 
@@ -613,52 +670,6 @@ body.nav-locked {
   width: 1px;
   height: 3rem;
   background-color: var(--color-brass);
-}
-
-/* Hero görsel paneli */
-.hero__visual {
-  position: relative;
-}
-
-.hero__frame {
-  position: relative;
-  border: 1px solid var(--line-dark);
-  padding: clamp(0.75rem, 1.5vw, 1.25rem);
-  background-color: var(--color-white);
-}
-
-.hero__frame::after {
-  content: "";
-  position: absolute;
-  top: clamp(1.5rem, 3vw, 2.5rem);
-  right: calc(clamp(0.75rem, 1.5vw, 1.25rem) * -1);
-  bottom: calc(clamp(1.5rem, 3vw, 2.5rem) * -1);
-  left: clamp(1.5rem, 3vw, 2.5rem);
-  border: 1px solid var(--color-brass);
-  opacity: 0.45;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.hero__image {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-}
-
-.hero__monogram {
-  position: absolute;
-  top: -1.1rem;
-  left: -1.1rem;
-  display: grid;
-  place-items: center;
-  width: 4.25rem;
-  height: 4.25rem;
-  background-color: var(--color-ink);
-  color: var(--color-ivory);
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  letter-spacing: 0.12em;
 }
 
 /* --------------------------------------------------------------------------
@@ -1523,6 +1534,10 @@ body.nav-locked {
 
 .site-footer .brand__mark {
   color: var(--color-white);
+}
+
+.site-footer .brand__sub {
+  color: rgba(244, 241, 234, 0.55);
 }
 
 .site-footer__statement {
@@ -2408,7 +2423,12 @@ body.nav-locked {
    23. Reveal Animations
    -------------------------------------------------------------------------- */
 
-.reveal {
+/* Not: Gizleme yalnızca <html class="js"> altında uygulanır; JS yoksa
+   içerik her zaman görünür kalır. Clip-path gözlemlenen elemana değil
+   çocuğuna uygulanır — tamamen kırpılmış eleman IntersectionObserver
+   tarafından "görünmez" sayıldığından tetiklenme hiç gerçekleşmiyordu. */
+
+.js .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition:
@@ -2417,35 +2437,41 @@ body.nav-locked {
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-.reveal.is-visible {
+.js .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.reveal--line {
+.js .reveal--line,
+.js .reveal--image {
   transform: none;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 900ms var(--ease-out), opacity var(--dur-base) var(--ease-out);
 }
 
-.reveal--line.is-visible {
-  clip-path: inset(0 0 0 0);
-}
-
-.reveal--image {
-  transform: none;
+.js .reveal--image > * {
   clip-path: inset(0 0 100% 0);
-  transition: clip-path 900ms var(--ease-out), opacity var(--dur-base) var(--ease-out);
+  transition: clip-path 900ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
-.reveal--image.is-visible {
+.js .reveal--image.is-visible > * {
   clip-path: inset(0 0 0 0);
+}
+
+.js .reveal--line > * {
+  display: inline-block;
+  clip-path: inset(-0.2em 100% -0.2em 0);
+  transition: clip-path 900ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal--line.is-visible > * {
+  clip-path: inset(-0.2em 0 -0.2em 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
-  .reveal--line,
-  .reveal--image {
+  .js .reveal,
+  .js .reveal--line > *,
+  .js .reveal--image > * {
     opacity: 1;
     transform: none;
     clip-path: none;
@@ -2537,4 +2563,99 @@ body.nav-locked {
 
 .error-page__cta {
   margin-top: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   26. Randevu Modal
+   -------------------------------------------------------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cookie);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity var(--dur-base) var(--ease-smooth),
+    visibility 0s linear var(--dur-base);
+}
+
+.modal.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity var(--dur-base) var(--ease-smooth),
+    visibility 0s;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(17, 19, 21, 0.66);
+}
+
+.modal__panel {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background-color: var(--color-ivory);
+  border-top: 2px solid var(--color-brass);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  transform: translateY(18px);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.modal.is-open .modal__panel {
+  transform: translateY(0);
+}
+
+.modal__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--color-muted);
+  transition:
+    color var(--dur-fast) var(--ease-smooth),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.modal__close svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.modal__close:hover {
+  color: var(--color-ink);
+  transform: rotate(90deg);
+}
+
+.modal__title {
+  font-size: var(--fs-h3);
+  margin-top: 0.85rem;
+}
+
+.modal__desc {
+  margin-top: 0.6rem;
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+.modal__form {
+  display: grid;
+  gap: 1.4rem;
+  margin-top: 1.5rem;
+}
+
+.mobile-nav__footer .btn {
+  margin-top: 0.85rem;
+  align-self: flex-start;
 }

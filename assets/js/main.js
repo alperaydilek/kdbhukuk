@@ -300,3 +300,138 @@
     });
   }
 })();
+
+/* ==========================================================================
+   Randevu Modal
+   ========================================================================== */
+
+(function () {
+  "use strict";
+
+  const modal = document.getElementById("appointment-modal");
+  if (!modal) return;
+
+  const openers = document.querySelectorAll("[data-appointment-open]");
+  const closers = modal.querySelectorAll("[data-appointment-close]");
+  let lastFocused = null;
+
+  const openModal = function () {
+    lastFocused = document.activeElement;
+    modal.classList.add("is-open");
+    modal.removeAttribute("aria-hidden");
+    document.body.classList.add("nav-locked");
+
+    const first = modal.querySelector("input");
+    if (first) {
+      window.setTimeout(function () {
+        first.focus();
+      }, 80);
+    }
+  };
+
+  const closeModal = function () {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+
+    const mobileNav = document.querySelector(".mobile-nav.is-open");
+    if (!mobileNav) document.body.classList.remove("nav-locked");
+    if (lastFocused) lastFocused.focus();
+  };
+
+  openers.forEach(function (btn) {
+    btn.addEventListener("click", openModal);
+  });
+
+  closers.forEach(function (btn) {
+    btn.addEventListener("click", closeModal);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+
+  /* Randevu formu — frontend demo doğrulama */
+  const form = document.getElementById("appointment-form");
+  if (!form) return;
+
+  const statusEl = form.querySelector(".form__status");
+
+  const validators = {
+    name: function (value) {
+      return value.trim().length >= 3;
+    },
+    phone: function (value) {
+      return /^[+()\d\s-]{10,17}$/.test(value.trim());
+    },
+    email: function (value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+    }
+  };
+
+  const setError = function (field, hasError) {
+    const wrapper = field.closest(".form__field");
+    if (!wrapper) return;
+    wrapper.classList.toggle("has-error", hasError);
+    field.setAttribute("aria-invalid", hasError ? "true" : "false");
+  };
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let valid = true;
+    let firstInvalid = null;
+
+    Object.keys(validators).forEach(function (name) {
+      const field = form.elements[name];
+      if (!field) return;
+
+      const ok = validators[name](field.value);
+      setError(field, !ok);
+
+      if (!ok) {
+        valid = false;
+        if (!firstInvalid) firstInvalid = field;
+      }
+    });
+
+    if (!valid) {
+      if (statusEl) {
+        statusEl.textContent = "Lütfen işaretli alanları kontrol ediniz.";
+        statusEl.classList.add("is-error");
+        statusEl.classList.remove("is-success");
+      }
+      if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    // Frontend demo: gerçek gönderim backend aşamasında eklenecek
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    if (statusEl) {
+      statusEl.textContent =
+        "Randevu talebiniz alındı. Sizi en kısa sürede arayacağız. (Demo)";
+      statusEl.classList.add("is-success");
+      statusEl.classList.remove("is-error");
+    }
+
+    form.reset();
+    window.setTimeout(function () {
+      if (submitBtn) submitBtn.disabled = false;
+      closeModal();
+      if (statusEl) {
+        statusEl.textContent = "";
+        statusEl.classList.remove("is-success");
+      }
+    }, 2600);
+  });
+
+  form.addEventListener("input", function (event) {
+    const field = event.target;
+    if (validators[field.name] && validators[field.name](field.value)) {
+      setError(field, false);
+    }
+  });
+})();

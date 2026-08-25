@@ -63,7 +63,7 @@
       toggle.setAttribute("aria-label", "Menüyü kapat");
       mobileNav.classList.add("is-open");
       mobileNav.removeAttribute("aria-hidden");
-      document.body.classList.add("nav-locked");
+      document.body.classList.add("nav-locked", "nav-open");
       if (header) header.classList.remove("is-hidden");
 
       const first = mobileNav.querySelector(focusableSelector);
@@ -75,7 +75,7 @@
       toggle.setAttribute("aria-label", "Menüyü aç");
       mobileNav.classList.remove("is-open");
       mobileNav.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("nav-locked");
+      document.body.classList.remove("nav-locked", "nav-open");
       if (lastFocused) lastFocused.focus();
     };
 
