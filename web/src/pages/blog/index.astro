@@ -1,0 +1,115 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBlogCategories, getBlogPosts, formatDateTr } from '../../lib/api';
+
+const [categories, posts] = await Promise.all([
+  getBlogCategories(),
+  getBlogPosts({ per_page: 50 }),
+]);
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'Blog',
+      name: 'KDB Hukuk — Hukuki Bilgi Merkezi',
+      url: 'https://www.kdbhukuk.com/blog',
+      inLanguage: 'tr',
+      publisher: { '@type': 'Organization', name: 'KDB Hukuk' },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.kdbhukuk.com/blog' },
+      ],
+    },
+  ],
+};
+
+const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></svg>`;
+---
+
+<BaseLayout
+  title="Hukuki Bilgi Merkezi | KDB Hukuk Blog"
+  description="Güncel mevzuat, hukuki süreçler ve uygulamaya ilişkin değerlendirmeler. KDB Hukuk — Av. Kaan Durali Bulut tarafından hazırlanan hukuki içerikler."
+  canonicalPath="/blog"
+  activeNav="blog"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container page-hero__grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Sayfa konumu">
+          <ol>
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><span aria-current="page">Blog</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow reveal">Blog</p>
+        <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">Hukuki Bilgi Merkezi</h1>
+        <p class="lead page-hero__desc reveal" data-reveal-delay="160">
+          Güncel mevzuat, hukuki süreçler ve uygulamaya ilişkin
+          değerlendirmeler.
+        </p>
+      </div>
+      <p class="page-hero__aside reveal" data-reveal-delay="240">
+        İçerikler genel bilgilendirme amaçlıdır; hukuki danışmanlık yerine
+        geçmez.
+      </p>
+    </div>
+  </section>
+
+  <!-- Blog listesi -->
+  <section class="section" aria-label="Blog yazıları">
+    <div class="container">
+
+      <!-- Kategori filtreleri -->
+      <div class="filter-bar reveal" role="group" aria-label="Kategori filtreleri">
+        <button class="filter-btn is-active" type="button" data-filter="all" aria-pressed="true">Tümü</button>
+        {categories.map((cat) => (
+          <button class="filter-btn" type="button" data-filter={cat.slug} aria-pressed="false">{cat.name}</button>
+        ))}
+      </div>
+
+      <!-- Yazı listesi: solda kapak, sağda içerik -->
+      <ul class="post-list" role="list">
+        {posts.map((post, i) => (
+          <li class="post-row reveal" data-reveal-delay={Math.min(i, 3) * 60} data-category={post.category?.slug}>
+            <a class="post-row__link" href={`/blog/${post.slug}`}>
+              <div class="post-row__media">
+                <img
+                  src={post.cover_image || '/assets/images/journal-01.jpg'}
+                  width="1200" height="750"
+                  alt={`${post.title} makalesi kapak görseli`}
+                  loading={i === 0 ? undefined : 'lazy'}
+                />
+              </div>
+              <div class="post-row__body">
+                <p class="entry-meta">
+                  {post.category && <span class="entry-meta__cat">{post.category.name}</span>}
+                  <span class="entry-meta__sep" aria-hidden="true"></span>
+                  <time datetime={post.published_at ?? undefined}>{formatDateTr(post.published_at)}</time>
+                  {post.reading_minutes && (
+                    <>
+                      <span class="entry-meta__sep" aria-hidden="true"></span>
+                      <span>{post.reading_minutes} dk okuma</span>
+                    </>
+                  )}
+                </p>
+                <h2 class="post-row__title">{post.title}</h2>
+                <p class="post-row__excerpt">{post.excerpt}</p>
+                <span class="post-row__more">
+                  Devamını Oku
+                  <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

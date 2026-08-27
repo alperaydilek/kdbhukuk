@@ -1,0 +1,16 @@
+---
+import LegalDocument from '../components/LegalDocument.astro';
+import { getLegalPage } from '../lib/api';
+
+const page = await getLegalPage('cerez-politikasi');
+
+if (!page) {
+  return Astro.redirect('/');
+}
+---
+
+<LegalDocument
+  page={page}
+  subtitle="Web sitemizde kullanılan çerezler ve tercihlerinizi nasıl yönetebileceğiniz hakkında bilgilendirme."
+  canonicalPath="/cerez-politikasi"
+/>

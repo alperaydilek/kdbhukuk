@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage, getSiteSettings } from '../lib/api';
+
+const page = await getPage('iletisim');
+const f = page?.fields ?? {};
+const siteSettings = await getSiteSettings();
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'LegalService',
+      '@id': 'https://www.kdbhukuk.com/#legalservice',
+      name: 'KDB Hukuk',
+      url: 'https://www.kdbhukuk.com/',
+      telephone: siteSettings.phone || 'TODO',
+      email: siteSettings.email || 'TODO',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: siteSettings.address || 'TODO',
+        addressCountry: 'TR',
+      },
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: '09:00',
+        closes: '18:00',
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'İletişim', item: 'https://www.kdbhukuk.com/iletisim' },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={page?.meta_title || 'İletişim | KDB Hukuk — Av. Kaan Durali Bulut'}
+  description={page?.meta_description || 'KDB Hukuk ile iletişime geçin. Hukuki sürecinizi değerlendirmek ve randevu talebi oluşturmak için iletişim formunu kullanabilirsiniz.'}
+  canonicalPath="/iletisim"
+  activeNav="contact"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container page-hero__grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Sayfa konumu">
+          <ol>
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><span aria-current="page">İletişim</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow reveal">İletişim</p>
+        <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">Bizimle İletişime Geçin</h1>
+        <p class="lead page-hero__desc reveal" data-reveal-delay="160">
+          {f.intro_text || 'Hukuki sürecinizi değerlendirmek ve doğru yol haritasını oluşturmak için bize ulaşabilirsiniz.'}
+        </p>
+      </div>
+      <p class="page-hero__aside reveal" data-reveal-delay="240">
+        Form üzerinden ilettiğiniz talepler, en kısa sürede değerlendirilerek
+        size dönüş yapılır.
+      </p>
+    </div>
+  </section>
+
+  <!-- İletişim -->
+  <section class="section" aria-label="İletişim bilgileri ve form">
+    <div class="container contact-layout">
+
+      <!-- Bilgiler -->
+      <div class="contact-info">
+        <div class="contact-block reveal">
+          <p class="contact-block__label">Telefon</p>
+          <p class="contact-block__value office-phone">{siteSettings.phone || 'Telefon bilgisi eklenecektir'}</p>
+          <p class="contact-block__note">Mesai saatleri içinde ulaşabilirsiniz.</p>
+        </div>
+
+        <div class="contact-block reveal" data-reveal-delay="60">
+          <p class="contact-block__label">E-posta</p>
+          <p class="contact-block__value office-email">{siteSettings.email || 'E-posta bilgisi eklenecektir'}</p>
+          <p class="contact-block__note">E-postalarınıza en geç bir iş günü içinde dönüş yapılır.</p>
+        </div>
+
+        <div class="contact-block reveal" data-reveal-delay="120">
+          <p class="contact-block__label">WhatsApp</p>
+          <p class="contact-block__value office-whatsapp">{siteSettings.whatsapp || 'WhatsApp bilgisi eklenecektir'}</p>
+          <p class="contact-block__note">Yazılı ön bilgilendirme talepleri için kullanılabilir.</p>
+        </div>
+
+        <div class="contact-block reveal" data-reveal-delay="180">
+          <p class="contact-block__label">Adres</p>
+          <p class="contact-block__value office-address">{siteSettings.address || 'Adres bilgisi eklenecektir'}</p>
+          <p class="contact-block__note">Görüşmeler randevu ile gerçekleştirilir.</p>
+        </div>
+
+        <div class="contact-block reveal" data-reveal-delay="240">
+          <p class="contact-block__label">Çalışma Saatleri</p>
+          <p class="contact-block__value">{siteSettings.working_hours || 'Hafta içi 09.00 — 18.00'}</p>
+          <p class="contact-block__note">Hafta sonu görüşmeleri önceden randevu ile planlanır.</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div>
+        <form class="form reveal" id="contact-form" novalidate>
+          <div class="form__field">
+            <label class="form__label" for="cf-name">Ad Soyad <span class="req" aria-hidden="true">*</span></label>
+            <input class="form__input" type="text" id="cf-name" name="name" autocomplete="name" required aria-required="true">
+            <p class="form__error" id="cf-name-error">Lütfen adınızı ve soyadınızı giriniz.</p>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="cf-phone">Telefon <span class="req" aria-hidden="true">*</span></label>
+            <input class="form__input" type="tel" id="cf-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="0(5__) ___ __ __" required aria-required="true">
+            <p class="form__error" id="cf-phone-error">Lütfen geçerli bir telefon numarası giriniz.</p>
+          </div>
+
+          <div class="form__field form__field--full">
+            <label class="form__label" for="cf-email">E-posta <span class="req" aria-hidden="true">*</span></label>
+            <input class="form__input" type="email" id="cf-email" name="email" autocomplete="email" required aria-required="true">
+            <p class="form__error" id="cf-email-error">Lütfen geçerli bir e-posta adresi giriniz.</p>
+          </div>
+
+          <div class="form__field form__field--full">
+            <label class="form__label" for="cf-subject">Konu <span class="req" aria-hidden="true">*</span></label>
+            <select class="form__select" id="cf-subject" name="subject" required aria-required="true">
+              <option value="" selected>Konu seçiniz</option>
+              <option value="ceza">Ceza Hukuku</option>
+              <option value="gayrimenkul">Gayrimenkul Hukuku</option>
+              <option value="ticaret">Ticaret Hukuku</option>
+              <option value="is">İş Hukuku</option>
+              <option value="aile">Aile Hukuku</option>
+              <option value="miras">Miras Hukuku</option>
+              <option value="icra">İcra ve İflas Hukuku</option>
+              <option value="sozlesme">Sözleşmeler Hukuku</option>
+              <option value="tazminat">Tazminat Hukuku</option>
+              <option value="danismanlik">Hukuki Danışmanlık</option>
+              <option value="diger">Diğer</option>
+            </select>
+            <p class="form__error" id="cf-subject-error">Lütfen bir konu seçiniz.</p>
+          </div>
+
+          <div class="form__field form__field--full">
+            <label class="form__label" for="cf-message">Mesajınız <span class="req" aria-hidden="true">*</span></label>
+            <textarea class="form__textarea" id="cf-message" name="message" required aria-required="true" placeholder="Hukuki talebinizi kısaca özetleyiniz. Lütfen bu alanda özel nitelikli kişisel verilerinizi paylaşmayınız."></textarea>
+            <p class="form__error" id="cf-message-error">Lütfen en az 20 karakterlik bir mesaj yazınız.</p>
+          </div>
+
+          <label class="form__consent">
+            <input type="checkbox" name="kvkk" required aria-required="true">
+            <span>
+              <a href="/kvkk">KVKK Aydınlatma Metni</a>'ni okudum;
+              kişisel verilerimin iletişim talebimin karşılanması amacıyla
+              işlenmesine onay veriyorum.
+              <span class="req" aria-hidden="true">*</span>
+            </span>
+          </label>
+
+          <div class="form__submit">
+            <button class="btn" type="submit">Gönder</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Harita -->
+    <div class="container">
+      {f.map_embed_url ? (
+        <div class="map-placeholder reveal" style="padding:0; background:none;">
+          <iframe src={f.map_embed_url} width="100%" height="100%" style="border:0; min-height: 360px;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="KDB Hukuk ofis konumu" />
+        </div>
+      ) : (
+        <div class="map-placeholder reveal" role="img" aria-label="Ofis konumu harita alanı">
+          <p class="map-placeholder__label">
+            <strong>Harita Alanı</strong>
+            Ofis adresi eklendiğinde Google Maps burada görüntülenecektir.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

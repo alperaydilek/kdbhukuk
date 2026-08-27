@@ -1,0 +1,173 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getService, getSiteSettings } from '../../lib/api';
+
+const { slug } = Astro.params;
+const service = slug ? await getService(slug) : null;
+
+if (!service) {
+  return Astro.redirect('/hizmetlerimiz');
+}
+
+const siteSettings = await getSiteSettings();
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: service.title,
+      serviceType: `${service.title} Danışmanlığı ve Dava Takibi`,
+      provider: { '@type': 'LegalService', name: 'KDB Hukuk', url: 'https://www.kdbhukuk.com/' },
+      areaServed: 'TR',
+      description: service.short_description,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Hizmetlerimiz', item: 'https://www.kdbhukuk.com/hizmetlerimiz' },
+        { '@type': 'ListItem', position: 3, name: service.title, item: `https://www.kdbhukuk.com/hizmetlerimiz/${service.slug}` },
+      ],
+    },
+    ...(service.faqs.length
+      ? [{
+          '@type': 'FAQPage',
+          mainEntity: service.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+          })),
+        }]
+      : []),
+  ],
+};
+---
+
+<BaseLayout
+  title={service.meta_title || `${service.title} | KDB Hukuk`}
+  description={service.meta_description || service.short_description || `${service.title} alanında hukuki danışmanlık ve temsil. KDB Hukuk — Av. Kaan Durali Bulut.`}
+  canonicalPath={`/hizmetlerimiz/${service.slug}`}
+  activeNav="services"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container page-hero__grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Sayfa konumu">
+          <ol>
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><a href="/hizmetlerimiz">Hizmetlerimiz</a></li>
+            <li><span aria-current="page">{service.title}</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow reveal">Hizmet Alanı — {String(service.order).padStart(2, '0')}</p>
+        <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">{service.title}</h1>
+        <p class="lead page-hero__desc reveal" data-reveal-delay="160">
+          {service.short_description}
+        </p>
+      </div>
+      <p class="page-hero__aside reveal" data-reveal-delay="240">
+        Süreç, ön inceleme ve risk analiziyle başlar; müvekkille birlikte
+        belirlenen stratejiyle ilerler.
+      </p>
+    </div>
+  </section>
+
+  <!-- İçerik -->
+  <section class="section" aria-label="Hizmet detayı">
+    <div class="container service-layout">
+      <article class="service-content">
+        {service.description && (
+          <>
+            <h2 class="reveal">{service.title} nedir?</h2>
+            <Fragment set:html={service.description} />
+          </>
+        )}
+
+        {service.covers && (
+          <>
+            <h2 class="reveal">Hangi konuları kapsar?</h2>
+            <Fragment set:html={service.covers} />
+          </>
+        )}
+
+        {service.scope && (
+          <>
+            <h2 class="reveal">Hizmet kapsamı</h2>
+            <Fragment set:html={service.scope} />
+          </>
+        )}
+
+        {service.process_steps?.length > 0 && (
+          <>
+            <h2 class="reveal">Süreç nasıl ilerler?</h2>
+            <ol class="process-steps reveal" role="list">
+              {service.process_steps.map((step) => (
+                <li>
+                  <div>
+                    <strong>{step.title}</strong>
+                    <p>{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+
+        {service.why_important && (
+          <>
+            <h2 class="reveal">Neden hukuki destek önemlidir?</h2>
+            <Fragment set:html={service.why_important} />
+          </>
+        )}
+
+        {service.faqs.length > 0 && (
+          <>
+            <h2 class="reveal" id="sss">Sık Sorulan Sorular</h2>
+            <div class="accordion reveal" data-reveal-delay="80">
+              {service.faqs.map((faq, i) => (
+                <div class="accordion__item">
+                  <h3>
+                    <button class="accordion__trigger" type="button" aria-expanded="false" aria-controls={`faq-panel-${i + 1}`} id={`faq-trigger-${i + 1}`}>
+                      {faq.question}
+                      <span class="accordion__icon" aria-hidden="true"></span>
+                    </button>
+                  </h3>
+                  <div class="accordion__panel" id={`faq-panel-${i + 1}`} role="region" aria-labelledby={`faq-trigger-${i + 1}`}>
+                    <div class="accordion__content">
+                      <p>{faq.answer}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div class="article-note reveal">
+          <p>
+            <strong>Bilgilendirme:</strong> Bu sayfadaki içerik genel
+            bilgilendirme amacı taşımaktadır ve hukuki danışmanlık niteliğinde
+            değildir. Somut durumunuz için hukuki görüş alınız.
+          </p>
+        </div>
+      </article>
+
+      <aside class="service-aside reveal" data-reveal-delay="150" aria-label="İletişim çağrısı">
+        <h2 class="service-aside__title">Hukuki destek almak için iletişime geçin.</h2>
+        <p>
+          {service.title} sürecinizi birlikte değerlendirelim; durumunuza uygun
+          yol haritasını oluşturalım.
+        </p>
+        <a class="btn btn--light" href="/iletisim">İletişime Geç</a>
+        <div class="service-aside__contact">
+          <span class="office-phone">{siteSettings.phone || 'Telefon bilgisi eklenecektir'}</span>
+          <span class="office-email">{siteSettings.email || 'E-posta bilgisi eklenecektir'}</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

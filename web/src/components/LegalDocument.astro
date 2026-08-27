@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { prepareLegalContent, type LegalPageData } from '../lib/api';
+
+export interface Props {
+  page: LegalPageData;
+  subtitle: string;
+  canonicalPath: string;
+}
+
+const { page, subtitle, canonicalPath } = Astro.props;
+const { html: content, toc } = prepareLegalContent(page.content);
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: `${page.title} | KDB Hukuk`,
+      url: `https://www.kdbhukuk.com${canonicalPath}`,
+      inLanguage: 'tr',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: page.title, item: `https://www.kdbhukuk.com${canonicalPath}` },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${page.title} | KDB Hukuk`}
+  description={subtitle}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Sayfa konumu">
+        <ol>
+          <li><a href="/">Ana Sayfa</a></li>
+          <li><span aria-current="page">{page.title}</span></li>
+        </ol>
+      </nav>
+      <p class="eyebrow reveal">Hukuki Metinler</p>
+      <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">{page.title}</h1>
+      <p class="lead page-hero__desc reveal" data-reveal-delay="160">{subtitle}</p>
+    </div>
+  </section>
+
+  <!-- İçerik -->
+  <section class="section" aria-label={`${page.title} metni`}>
+    <div class="container legal-layout">
+      <aside class="legal-toc" aria-label="İçindekiler">
+        <p class="legal-toc__title">İçindekiler</p>
+        <ul class="legal-toc__list" role="list">
+          {toc.map((item) => (
+            <li><a href={`#${item.id}`}>{item.title}</a></li>
+          ))}
+        </ul>
+      </aside>
+
+      <div class="legal-content">
+        <div class="legal-meta">
+          Son güncelleme tarihi: {page.updated_at ? new Date(page.updated_at).toLocaleDateString('tr-TR') : 'Yayın aşamasında eklenecektir.'} Bu metin
+          taslak niteliğindedir; yayına alınmadan önce hukuki inceleme ile
+          kesinleştirilmelidir.
+        </div>
+        <Fragment set:html={content} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

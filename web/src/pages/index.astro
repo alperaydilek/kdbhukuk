@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage, getServices, getSiteSettings } from '../lib/api';
+
+const page = await getPage('home');
+const f = page?.fields ?? {};
+const services = (await getServices()).slice(0, 8);
+const siteSettings = await getSiteSettings();
+
+const heroTitle = f.hero_title || 'Hukuki süreçlerde güvenilir ve stratejik çözüm ortağınız.';
+const heroDesc = f.hero_desc || 'KDB Hukuk, Avukat Kaan Durali Bulut liderliğinde bireysel ve kurumsal müvekkillerine hukuki danışmanlık ve dava süreçlerinde profesyonel hizmet sunmaktadır.';
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'LegalService',
+      '@id': 'https://www.kdbhukuk.com/#legalservice',
+      name: 'KDB Hukuk',
+      url: 'https://www.kdbhukuk.com/',
+      description: 'KDB Hukuk, Avukat Kaan Durali Bulut tarafından bireysel ve kurumsal müvekkillere hukuki danışmanlık ve avukatlık hizmetleri sunmaktadır.',
+      founder: { '@id': 'https://www.kdbhukuk.com/#attorney' },
+      telephone: siteSettings.phone || 'TODO',
+      email: siteSettings.email || 'TODO',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: siteSettings.address || 'TODO',
+        addressCountry: 'TR',
+      },
+      areaServed: 'TR',
+      knowsAbout: ['Ceza Hukuku', 'Gayrimenkul Hukuku', 'Ticaret Hukuku', 'İş Hukuku', 'Aile Hukuku', 'Miras Hukuku', 'İcra ve İflas Hukuku', 'Sözleşmeler Hukuku', 'Tazminat Hukuku', 'Hukuki Danışmanlık'],
+    },
+    {
+      '@type': 'Attorney',
+      '@id': 'https://www.kdbhukuk.com/#attorney',
+      name: 'Av. Kaan Durali Bulut',
+      jobTitle: 'Avukat',
+      worksFor: { '@id': 'https://www.kdbhukuk.com/#legalservice' },
+      url: 'https://www.kdbhukuk.com/hakkimizda',
+    },
+    {
+      '@type': 'Organization',
+      '@id': 'https://www.kdbhukuk.com/#organization',
+      name: 'KDB Hukuk',
+      url: 'https://www.kdbhukuk.com/',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://www.kdbhukuk.com/#website',
+      name: 'KDB Hukuk',
+      url: 'https://www.kdbhukuk.com/',
+      publisher: { '@id': 'https://www.kdbhukuk.com/#organization' },
+      inLanguage: 'tr',
+    },
+  ],
+};
+
+const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></svg>`;
+---
+
+<BaseLayout
+  title={page?.meta_title || 'KDB Hukuk | Av. Kaan Durali Bulut'}
+  description={page?.meta_description || 'KDB Hukuk, Avukat Kaan Durali Bulut tarafından bireysel ve kurumsal müvekkillere hukuki danışmanlık ve avukatlık hizmetleri sunmaktadır.'}
+  canonicalPath="/"
+  activeNav="home"
+  jsonLd={jsonLd}
+>
+  <!-- ============================== HERO ============================== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero__inner">
+      <div class="hero__content">
+        <p class="eyebrow hero__eyebrow reveal">{f.hero_eyebrow || 'KDB Hukuk'}</p>
+        <h1 class="hero__title reveal" id="hero-title" data-reveal-delay="80" set:html={heroTitle.replace(/güvenilir/i, '<em>güvenilir</em>')} />
+        <p class="lead hero__desc reveal" data-reveal-delay="160">
+          {heroDesc}
+        </p>
+        <div class="hero__actions reveal" data-reveal-delay="240">
+          <a class="btn" href="/hizmetlerimiz">{f.hero_cta_primary_label || 'Hukuki Hizmetlerimizi İnceleyin'}</a>
+          <a class="link-arrow" href="/iletisim">
+            {f.hero_cta_secondary_label || 'İletişime Geçin'}
+            <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="hero__meta" aria-hidden="true">Avukatlık &amp; Danışmanlık</p>
+  </section>
+
+  <!-- ============================== TANITIM ============================== -->
+  <section class="section intro" aria-labelledby="intro-title">
+    <div class="container intro__grid">
+      <div class="intro__label reveal">
+        <p class="eyebrow" id="intro-title">{f.intro_label || 'KDB Hukuk'}</p>
+        <p>
+          {f.intro_text || 'Hukuki danışmanlık ve dava takibinde; analiz, öngörü ve şeffaf iletişimi merkeze alan bir çalışma anlayışı.'}
+        </p>
+      </div>
+      <div>
+        <p class="intro__statement reveal reveal--line">
+          <span>{f.intro_statement || 'Her hukuki süreç yalnızca mevzuat bilgisi değil, doğru strateji gerektirir.'}</span>
+        </p>
+        <div class="intro__cta reveal" data-reveal-delay="150">
+          <a class="link-arrow" href="/hakkimizda">
+            Hakkımızda
+            <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== HİZMETLER ============================== -->
+  <section class="section section--flush-top" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-head__index" aria-hidden="true">02</span>
+        <div class="section-head__body">
+          <p class="eyebrow">Çalışma Alanları</p>
+          <h2 class="section-head__title" id="services-title">Hukuki Hizmetler</h2>
+          <p class="section-head__desc">
+            Bireysel ve kurumsal müvekkillerimize danışmanlık ve dava
+            süreçlerinin her aşamasında hizmet sunuyoruz.
+          </p>
+        </div>
+      </div>
+
+      <ul class="service-cards" role="list">
+        {services.map((service, i) => (
+          <li class="service-card reveal" data-reveal-delay={(i % 4) * 80}>
+            <a class="service-card__link" href={`/hizmetlerimiz/${service.slug}`}>
+              <div class="service-card__media">
+                <img
+                  src={service.cover_image || '/assets/images/service-01.jpg'}
+                  width="720" height="960"
+                  alt={`${service.title} kapak görseli`}
+                  loading={i < 2 ? undefined : 'lazy'}
+                />
+              </div>
+              <div class="service-card__head">
+                <span class="service-card__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="service-card__title">{service.title}</h3>
+              </div>
+              <p class="service-card__desc">{service.short_description}</p>
+              <span class="service-card__more">
+                Detayları İncele
+                <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="services-foot reveal">
+        <a class="link-arrow" href="/hizmetlerimiz">
+          Tüm Hizmet Alanları
+          <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== AVUKAT ============================== -->
+  <section class="section section--dark" aria-labelledby="lawyer-title">
+    <div class="container lawyer__grid">
+      <div class="lawyer__portrait reveal reveal--image">
+        <img src="/assets/images/portrait-av-kaan-durali-bulut.jpg" width="800" height="1000" alt="Av. Kaan Durali Bulut portresi" loading="lazy">
+      </div>
+      <div class="lawyer__text">
+        <p class="eyebrow reveal">Kurucu Avukat</p>
+        <h2 class="lawyer__name reveal" id="lawyer-title" data-reveal-delay="80">
+          Av. Kaan Durali Bulut
+          <span class="lawyer__title-line">{f.lawyer_title || 'KDB Hukuk Kurucusu'}</span>
+        </h2>
+        <div class="lawyer__body reveal" data-reveal-delay="160" set:html={f.lawyer_bio || '<p>KDB Hukuk\'un kurucusu Avukat Kaan Durali Bulut, hukuki uyuşmazlıkların yalnızca mevcut mevzuat çerçevesinde değil; müvekkilin uzun vadeli çıkarları, riskleri ve stratejik hedefleri dikkate alınarak değerlendirilmesi gerektiği anlayışıyla hizmet vermektedir.</p><p>Müvekkil odaklı yaklaşım, şeffaf iletişim ve titiz dosya takibi; büronun her dosyada koruduğu temel çalışma prensipleridir.</p>'} />
+        <div class="lawyer__cta reveal" data-reveal-delay="240">
+          <a class="link-arrow" href="/hakkimizda">
+            {f.lawyer_cta_label || 'Kaan Durali Bulut Hakkında'}
+            <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CTA ============================== -->
+  <section class="section cta-band" aria-labelledby="cta-title">
+    <div class="container cta-band__grid">
+      <div>
+        <p class="eyebrow reveal">İletişim</p>
+        <h2 class="cta-band__title reveal" id="cta-title" data-reveal-delay="80" set:html={(f.cta_title || 'Hukuki desteğe mi ihtiyacınız var?').replace(/ihtiyacınız/i, '<em>ihtiyacınız</em>')} />
+        <p class="cta-band__desc reveal" data-reveal-delay="160">
+          {f.cta_desc || 'Hukuki sürecinizi değerlendirmek ve doğru yol haritasını oluşturmak için bizimle iletişime geçebilirsiniz.'}
+        </p>
+      </div>
+      <div class="cta-band__panel reveal" data-reveal-delay="200">
+        <div class="cta-band__contact">
+          <p class="office-phone"><strong>Telefon</strong> {siteSettings.phone || 'Telefon bilgisi eklenecektir'}</p>
+          <p class="office-email"><strong>E-posta</strong> {siteSettings.email || 'E-posta bilgisi eklenecektir'}</p>
+        </div>
+        <a class="btn" href="/iletisim">İletişime Geç</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

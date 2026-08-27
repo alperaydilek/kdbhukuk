@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getServices, getSiteSettings } from '../../lib/api';
+
+const services = await getServices();
+const siteSettings = await getSiteSettings();
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'ItemList',
+      name: 'KDB Hukuk — Hukuki Hizmetler',
+      itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, name: s.title })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Hizmetlerimiz', item: 'https://www.kdbhukuk.com/hizmetlerimiz' },
+      ],
+    },
+  ],
+};
+
+const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></svg>`;
+---
+
+<BaseLayout
+  title="Hukuki Hizmetlerimiz | KDB Hukuk"
+  description="KDB Hukuk'un sunduğu hukuki hizmetler: Ceza, Gayrimenkul, Ticaret, İş, Aile, Miras, İcra ve İflas, Sözleşmeler, Tazminat Hukuku ve Hukuki Danışmanlık."
+  canonicalPath="/hizmetlerimiz"
+  activeNav="services"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container page-hero__grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Sayfa konumu">
+          <ol>
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><span aria-current="page">Hizmetlerimiz</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow reveal">Çalışma Alanları</p>
+        <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">Hukuki Hizmetlerimiz</h1>
+        <p class="lead page-hero__desc reveal" data-reveal-delay="160">
+          KDB Hukuk tarafından sunulan hukuki danışmanlık ve temsil
+          hizmetlerini inceleyebilirsiniz.
+        </p>
+      </div>
+      <p class="page-hero__aside reveal" data-reveal-delay="240">
+        Her hizmet alanında; ön inceleme, risk analizi ve stratejik yol
+        haritası aynı özenle uygulanır.
+      </p>
+    </div>
+  </section>
+
+  <!-- Hizmetler — kapak görselli editorial grid -->
+  <section class="section" aria-label="Hizmet listesi">
+    <div class="container">
+      <ul class="service-cards" role="list">
+        {services.map((service, i) => (
+          <li class="service-card reveal" data-reveal-delay={(i % 4) * 80}>
+            <a class="service-card__link" href={`/hizmetlerimiz/${service.slug}`}>
+              <div class="service-card__media">
+                <img
+                  src={service.cover_image || '/assets/images/service-01.jpg'}
+                  width="720" height="960"
+                  alt={`${service.title} kapak görseli`}
+                  loading={i < 2 ? undefined : 'lazy'}
+                />
+              </div>
+              <div class="service-card__head">
+                <span class="service-card__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <h2 class="service-card__title">{service.title}</h2>
+              </div>
+              <p class="service-card__desc">
+                {service.short_description}
+              </p>
+              <span class="service-card__more">
+                Detayları İncele
+                <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--flush-top cta-band" aria-labelledby="cta-title">
+    <div class="container cta-band__grid" style="padding-top: var(--space-lg);">
+      <div>
+        <p class="eyebrow reveal">İletişim</p>
+        <h2 class="cta-band__title reveal" id="cta-title" data-reveal-delay="80">
+          Hangi hizmete ihtiyacınız olduğundan <em>emin değil misiniz?</em>
+        </h2>
+        <p class="cta-band__desc reveal" data-reveal-delay="160">
+          Durumunuzu birlikte değerlendirelim; size en uygun hukuki yol
+          haritasını beraber oluşturalım.
+        </p>
+      </div>
+      <div class="cta-band__panel reveal" data-reveal-delay="200">
+        <div class="cta-band__contact">
+          <p class="office-phone"><strong>Telefon</strong> {siteSettings.phone || 'Telefon bilgisi eklenecektir'}</p>
+          <p class="office-email"><strong>E-posta</strong> {siteSettings.email || 'E-posta bilgisi eklenecektir'}</p>
+        </div>
+        <a class="btn" href="/iletisim">İletişime Geç</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

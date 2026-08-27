@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPage, getSiteSettings } from '../lib/api';
+
+const page = await getPage('hakkimizda');
+const f = page?.fields ?? {};
+const siteSettings = await getSiteSettings();
+
+const defaultPrinciples = [
+  { title: 'Yaklaşımımız', description: 'Her uyuşmazlığı kendi koşulları içinde değerlendirir; dava yoluna gitmeden önce sulh, arabuluculuk ve müzakere seçeneklerini de kapsayan bütüncül bir değerlendirme yaparız.' },
+  { title: 'Çalışma Prensiplerimiz', description: 'Titiz dosya takibi, zamanında bilgilendirme ve özenli hazırlık; büromuzun her dosyada istisnasız uyguladığı çalışma standartlarıdır.' },
+  { title: 'Müvekkil İlişkileri', description: 'Müvekkillerimizi sürecin her aşamasında bilgilendirir; hukuki seçenekleri, olası riskleri ve muhtemel sonuçları anlaşılır bir dille aktarırız.' },
+  { title: 'Hukuki Strateji', description: 'Kısa vadeli kazanımlar yerine, müvekkilin uzun vadeli menfaatini gözeten; risk analizi ve öngörüye dayalı stratejiler geliştiririz.' },
+  { title: 'Etik ve Gizlilik', description: 'Avukatlık mesleğinin etik kurallarına ve sır saklama yükümlülüğüne mutlak bağlılık; müvekkil bilgilerinin gizliliği her koşulda korunur.' },
+];
+
+const principles = Array.isArray(f.principles) && f.principles.length ? f.principles : defaultPrinciples;
+
+const defaultBio = `<p>KDB Hukuk'un kurucusu Avukat Kaan Durali Bulut, hukuki uyuşmazlıkların yalnızca mevcut mevzuat çerçevesinde değil; müvekkilin uzun vadeli çıkarları, riskleri ve stratejik hedefleri dikkate alınarak değerlendirilmesi gerektiği anlayışıyla hizmet vermektedir.</p><p>Büromuz; ceza, gayrimenkul, ticaret, iş, aile ve miras hukuku başta olmak üzere geniş bir yelpazede danışmanlık ve dava takibi hizmeti sunmaktadır. Her dosya; kapsamlı bir ön inceleme, hukuki risk analizi ve müvekkille birlikte belirlenen yol haritası üzerinden yürütülür.</p><p>Müvekkillerimizle kurduğumuz ilişkinin temelinde şeffaf iletişim bulunur: sürecin her aşamasında mevcut durum, olası senaryolar ve izlenen strateji açık biçimde paylaşılır. Amacımız, hukuki süreçleri öngörülebilir kılmak ve müvekkilin karar alma sürecini sağlıklı bilgiyle desteklemektir.</p>`;
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'AboutPage',
+      '@id': 'https://www.kdbhukuk.com/hakkimizda#webpage',
+      name: 'Hakkımızda | KDB Hukuk',
+      url: 'https://www.kdbhukuk.com/hakkimizda',
+      inLanguage: 'tr',
+      about: { '@id': 'https://www.kdbhukuk.com/#legalservice' },
+    },
+    {
+      '@type': 'Attorney',
+      '@id': 'https://www.kdbhukuk.com/#attorney',
+      name: 'Av. Kaan Durali Bulut',
+      jobTitle: 'Avukat',
+      url: 'https://www.kdbhukuk.com/hakkimizda',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Hakkımızda', item: 'https://www.kdbhukuk.com/hakkimizda' },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={page?.meta_title || 'Hakkımızda | KDB Hukuk — Av. Kaan Durali Bulut'}
+  description={page?.meta_description || 'KDB Hukuk ve kurucusu Av. Kaan Durali Bulut hakkında: yaklaşımımız, çalışma prensiplerimiz, müvekkil ilişkileri ve etik değerlerimiz.'}
+  canonicalPath="/hakkimizda"
+  activeNav="about"
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="page-hero" aria-labelledby="page-title">
+    <div class="container page-hero__grid">
+      <div>
+        <nav class="breadcrumb" aria-label="Sayfa konumu">
+          <ol>
+            <li><a href="/">Ana Sayfa</a></li>
+            <li><span aria-current="page">Hakkımızda</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow reveal">Hakkımızda</p>
+        <h1 class="page-hero__title reveal" id="page-title" data-reveal-delay="80">KDB Hukuk</h1>
+        <p class="lead page-hero__desc reveal" data-reveal-delay="160">
+          {f.subtitle || 'Hukuki bilgi, stratejik yaklaşım ve güven temelli temsil.'}
+        </p>
+      </div>
+      <p class="page-hero__aside reveal" data-reveal-delay="240">
+        Bireysel ve kurumsal müvekkillere, danışmanlıktan dava takibine uzanan
+        bütüncül bir hukuk hizmeti.
+      </p>
+    </div>
+  </section>
+
+  <!-- Avukat -->
+  <section class="section" aria-labelledby="about-lawyer">
+    <div class="container about-grid">
+      <figure class="about-portrait reveal reveal--image">
+        <img src="/assets/images/portrait-av-kaan-durali-bulut.jpg" width="800" height="1000" alt="Av. Kaan Durali Bulut portresi">
+        <figcaption>Av. Kaan Durali Bulut — KDB Hukuk Kurucusu</figcaption>
+      </figure>
+
+      <div class="about-text">
+        <p class="eyebrow reveal">Kurucu Avukat</p>
+        <h2 class="reveal" id="about-lawyer" data-reveal-delay="60">
+          Av. Kaan Durali Bulut
+          <span class="lawyer__title-line">Avukat &amp; Hukuki Danışman</span>
+        </h2>
+        <div class="reveal" data-reveal-delay="140" set:html={f.lawyer_bio || defaultBio} />
+      </div>
+    </div>
+  </section>
+
+  <!-- İlkeler -->
+  <section class="section section--flush-top" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-head__index" aria-hidden="true">02</span>
+        <div class="section-head__body">
+          <p class="eyebrow">Çalışma Anlayışımız</p>
+          <h2 class="section-head__title" id="principles-title">İlkelerimiz</h2>
+        </div>
+      </div>
+
+      <ul class="principles" role="list">
+        {principles.map((p: { title: string; description: string }, i: number) => (
+          <li class="principle reveal" data-reveal-delay={i * 60}>
+            <span class="principle__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="principle__title">{p.title}</h3>
+            <p class="principle__desc">{p.description}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-band" aria-labelledby="cta-title">
+    <div class="container cta-band__grid">
+      <div>
+        <p class="eyebrow reveal">İletişim</p>
+        <h2 class="cta-band__title reveal" id="cta-title" data-reveal-delay="80">
+          Hukuki desteğe mi <em>ihtiyacınız</em> var?
+        </h2>
+        <p class="cta-band__desc reveal" data-reveal-delay="160">
+          Hukuki sürecinizi değerlendirmek ve doğru yol haritasını oluşturmak
+          için bizimle iletişime geçebilirsiniz.
+        </p>
+      </div>
+      <div class="cta-band__panel reveal" data-reveal-delay="200">
+        <div class="cta-band__contact">
+          <p class="office-phone"><strong>Telefon</strong> {siteSettings.phone || 'Telefon bilgisi eklenecektir'}</p>
+          <p class="office-email"><strong>E-posta</strong> {siteSettings.email || 'E-posta bilgisi eklenecektir'}</p>
+        </div>
+        <a class="btn" href="/iletisim">İletişime Geç</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

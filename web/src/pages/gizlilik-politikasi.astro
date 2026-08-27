@@ -1,0 +1,16 @@
+---
+import LegalDocument from '../components/LegalDocument.astro';
+import { getLegalPage } from '../lib/api';
+
+const page = await getLegalPage('gizlilik-politikasi');
+
+if (!page) {
+  return Astro.redirect('/');
+}
+---
+
+<LegalDocument
+  page={page}
+  subtitle="Web sitemizi ziyaret eden kullanıcıların kişisel verilerinin korunmasına ilişkin esaslar."
+  canonicalPath="/gizlilik-politikasi"
+/>

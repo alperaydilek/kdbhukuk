@@ -1,0 +1,125 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getBlogPost, formatDateTr } from '../../lib/api';
+
+const { slug } = Astro.params;
+const post = slug ? await getBlogPost(slug) : null;
+
+if (!post) {
+  return Astro.redirect('/blog');
+}
+
+const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></svg>`;
+
+const jsonLd = {
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.published_at,
+      dateModified: post.published_at,
+      inLanguage: 'tr',
+      author: { '@type': 'Person', name: post.author_name, jobTitle: 'Avukat' },
+      publisher: { '@type': 'Organization', name: 'KDB Hukuk', url: 'https://www.kdbhukuk.com/' },
+      mainEntityOfPage: `https://www.kdbhukuk.com/blog/${post.slug}`,
+      articleSection: post.category?.name,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: 'https://www.kdbhukuk.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.kdbhukuk.com/blog' },
+        { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.kdbhukuk.com/blog/${post.slug}` },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={post.meta_title || `${post.title} | KDB Hukuk`}
+  description={post.meta_description || post.excerpt || ''}
+  canonicalPath={`/blog/${post.slug}`}
+  activeNav="blog"
+  ogType="article"
+  jsonLd={jsonLd}
+>
+  <Fragment slot="head">
+    {post.published_at && <meta property="article:published_time" content={post.published_at}>}
+    <meta property="article:author" content={post.author_name}>
+    {post.category && <meta property="article:section" content={post.category.name}>}
+  </Fragment>
+
+  <article>
+    <!-- Makale başlığı — kapak görseli üstte, alçak banner -->
+    <header class="article-hero">
+      <div class="container">
+        <div class="article-hero__media reveal reveal--image">
+          <img
+            src={post.cover_image || '/assets/images/article-hero.jpg'}
+            width="1680" height="520"
+            alt={`${post.title} makalesi kapak görseli`}
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="article-hero__head">
+          <nav class="breadcrumb" aria-label="Sayfa konumu">
+            <ol>
+              <li><a href="/">Ana Sayfa</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><span aria-current="page">{post.title}</span></li>
+            </ol>
+          </nav>
+          <p class="entry-meta reveal" data-reveal-delay="80">
+            {post.category && <span class="entry-meta__cat">{post.category.name}</span>}
+          </p>
+          <h1 class="article-hero__title reveal" data-reveal-delay="140">
+            {post.title}
+          </h1>
+          <p class="entry-meta article-hero__meta reveal" data-reveal-delay="200">
+            <time datetime={post.published_at ?? undefined}>{formatDateTr(post.published_at)}</time>
+            {post.reading_minutes && (
+              <>
+                <span class="entry-meta__sep" aria-hidden="true"></span>
+                <span>{post.reading_minutes} dk okuma</span>
+              </>
+            )}
+            <span class="entry-meta__sep" aria-hidden="true"></span>
+            <span>{post.author_name}</span>
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Makale içeriği -->
+    <div class="container">
+      <div class="article-body">
+        <Fragment set:html={post.content} />
+
+        <div class="article-note">
+          <p>
+            <strong>Hukuki Uyarı:</strong> Bu içerik genel bilgilendirme
+            amacı taşımaktadır ve hukuki danışmanlık niteliğinde değildir.
+            Somut durumunuza ilişkin değerlendirme için bir avukata
+            başvurunuz.
+          </p>
+        </div>
+      </div>
+
+      <footer class="article-footer">
+        <div class="article-author">
+          <span class="article-author__label">Yazar</span>
+          <span class="article-author__name">{post.author_name}</span>
+        </div>
+        <a class="link-arrow" href="/blog">
+          Tüm Yazılar
+          <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+        </a>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>

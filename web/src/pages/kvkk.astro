@@ -1,0 +1,16 @@
+---
+import LegalDocument from '../components/LegalDocument.astro';
+import { getLegalPage } from '../lib/api';
+
+const page = await getLegalPage('kvkk');
+
+if (!page) {
+  return Astro.redirect('/');
+}
+---
+
+<LegalDocument
+  page={page}
+  subtitle="6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında bilgilendirme."
+  canonicalPath="/kvkk"
+/>
