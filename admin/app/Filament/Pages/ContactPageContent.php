@@ -2,11 +2,11 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Forms\Components\MapPicker;
 use App\Models\Page as PageModel;
 use App\Support\AccessArea;
 use BackedEnum;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -49,10 +49,12 @@ class ContactPageContent extends Page implements HasSchemas
                     ->description('Telefon, e-posta ve adres bilgileri Ayarlar → Site Bilgileri üzerinden yönetilir.')
                     ->schema([
                         Textarea::make('intro_text')->label('Giriş Açıklaması')->rows(2)->columnSpanFull(),
-                        TextInput::make('map_embed_url')
-                            ->label('Google Maps Embed URL')
-                            ->url()
-                            ->helperText('Google Maps → Paylaş → Harita Yerleştir bağlantısındaki src adresini yapıştırın.')
+                    ]),
+                Section::make('Ofis Konumu')
+                    ->description('Seçtiğiniz konum iletişim sayfasındaki haritada gösterilir ve "Konuma Git" butonu bu noktayı açar.')
+                    ->schema([
+                        MapPicker::make('map_location')
+                            ->label('Harita Üzerinde Konum')
                             ->columnSpanFull(),
                     ]),
             ])

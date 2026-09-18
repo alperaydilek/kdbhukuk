@@ -6,6 +6,22 @@ const page = await getPage('iletisim');
 const f = page?.fields ?? {};
 const siteSettings = await getSiteSettings();
 
+// Ofis konumu panelden harita üzerinde işaretlenir. Eski kurulumlarda elle
+// girilmiş bir Google Maps yerleştirme adresi kalmışsa o da desteklenir.
+const pin = f.map_location as { lat?: number; lng?: number } | undefined;
+const hasPin = typeof pin?.lat === 'number' && typeof pin?.lng === 'number';
+
+// Eski kurulumlarda elle girilmiş yerleştirme adresi varsa korunur.
+const legacyEmbedUrl = hasPin ? null : (f.map_embed_url || null);
+
+const directionsUrl = hasPin
+  ? `https://www.google.com/maps/search/?api=1&query=${pin!.lat}%2C${pin!.lng}`
+  : (siteSettings.address
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteSettings.address)}`
+      : null);
+
+const arrowIcon = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></svg>`;
+
 const jsonLd = {
   '@graph': [
     {
@@ -20,6 +36,7 @@ const jsonLd = {
         streetAddress: siteSettings.address || 'TODO',
         addressCountry: 'TR',
       },
+      ...(hasPin ? { geo: { '@type': 'GeoCoordinates', latitude: pin!.lat, longitude: pin!.lng } } : {}),
       openingHoursSpecification: {
         '@type': 'OpeningHoursSpecification',
         dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -171,18 +188,96 @@ const jsonLd = {
 
     <!-- Harita -->
     <div class="container">
-      {f.map_embed_url ? (
-        <div class="map-placeholder reveal" style="padding:0; background:none;">
-          <iframe src={f.map_embed_url} width="100%" height="100%" style="border:0; min-height: 360px;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="KDB Hukuk ofis konumu" />
+      {(hasPin || legacyEmbedUrl) ? (
+        <div class="map-block reveal">
+          {hasPin ? (
+            <div
+              class="map-block__frame"
+              id="office-map"
+              data-lat={String(pin!.lat)}
+              data-lng={String(pin!.lng)}
+              data-label={siteSettings.address || 'KDB Hukuk'}
+              role="img"
+              aria-label={`KDB Hukuk ofis konumu haritası${siteSettings.address ? ' — ' + siteSettings.address : ''}`}
+            ></div>
+          ) : (
+            <div class="map-block__frame">
+              <iframe src={legacyEmbedUrl} width="100%" height="100%" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="KDB Hukuk ofis konumu" />
+            </div>
+          )}
+          {directionsUrl && (
+            <div class="map-block__actions">
+              <a class="btn" href={directionsUrl} target="_blank" rel="noopener noreferrer">
+                Konuma Git
+                <span class="arrow" aria-hidden="true" set:html={arrowIcon} />
+              </a>
+              <p class="map-block__note">Bağlantı yol tarifi için harita uygulamasında açılır.</p>
+            </div>
+          )}
         </div>
       ) : (
         <div class="map-placeholder reveal" role="img" aria-label="Ofis konumu harita alanı">
           <p class="map-placeholder__label">
             <strong>Harita Alanı</strong>
-            Ofis adresi eklendiğinde Google Maps burada görüntülenecektir.
+            Ofis konumu panelden haritaya işaretlendiğinde burada görüntülenecektir.
           </p>
         </div>
       )}
     </div>
   </section>
+
+  {hasPin && (
+    <script is:inline>
+      (function () {
+        var el = document.getElementById('office-map');
+        if (!el) return;
+
+        var loaded = false;
+
+        function load() {
+          if (loaded) return;
+          loaded = true;
+
+          var css = document.createElement('link');
+          css.rel = 'stylesheet';
+          css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
+          document.head.appendChild(css);
+
+          var script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
+          script.onload = init;
+          document.head.appendChild(script);
+        }
+
+        function init() {
+          var lat = parseFloat(el.dataset.lat);
+          var lng = parseFloat(el.dataset.lng);
+          if (isNaN(lat) || isNaN(lng)) return;
+
+          var map = L.map(el, { scrollWheelZoom: false }).setView([lat, lng], 16);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap katkıda bulunanları',
+          }).addTo(map);
+
+          L.marker([lat, lng]).addTo(map).bindPopup(el.dataset.label || 'KDB Hukuk');
+        }
+
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                load();
+                observer.disconnect();
+              }
+            });
+          }, { rootMargin: '200px' });
+          observer.observe(el);
+        } else {
+          load();
+        }
+      })();
+    </script>
+  )}
 </BaseLayout>
