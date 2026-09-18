@@ -39,6 +39,7 @@ class AdminPanelSmokeTest extends TestCase
             ['admin/contact-submissions'],
             ['admin/appointment-requests'],
             ['admin/clients'],
+            ['admin/client-debts'],
             ['admin/cashbox-transactions'],
             ['admin/planned-payments'],
             ['admin/tasks'],

@@ -92,12 +92,7 @@
   }
 
   .section-head {
-    grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  .section-head__index {
-    padding-bottom: 0;
   }
 
   .intro__grid {
@@ -126,11 +121,7 @@
   }
 
   .principle {
-    grid-template-columns: 3rem minmax(0, 1fr);
-  }
-
-  .principle__desc {
-    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .lawyer__portrait {
