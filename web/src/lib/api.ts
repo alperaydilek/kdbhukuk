@@ -1,15 +1,39 @@
 // KDB Hukuk — Laravel API istemcisi
 // Tüm içerik admin panelinden (Filament) bu uçlar aracılığıyla çekilir.
 
-const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://kdbhukuk-admin.test/api';
+// Bu modül yalnızca sunucu tarafı render sırasında çalışır.
+// API_INTERNAL_URL tanımlıysa istekler genel alan adı yerine doğrudan
+// origin'e gider; böylece sunucu kendi alan adını çözerken CDN ucuna çıkıp
+// geri dönmez (bu gidiş-dönüş zaman zaman takılıyordu).
+const API_BASE_URL =
+  (typeof process !== 'undefined' ? process.env?.API_INTERNAL_URL : undefined) ||
+  import.meta.env.PUBLIC_API_URL ||
+  'http://kdbhukuk-admin.test/api';
+
+/** Tek bir isteğin zaman aşımı. Yanıtsız kalan istek sayfayı süresiz askıda bırakmamalı. */
+const API_TIMEOUT_MS = 5000;
+
+async function apiRequest<T>(path: string): Promise<T | null> {
+  const res = await fetch(`${API_BASE_URL}/${path}`, {
+    signal: AbortSignal.timeout(API_TIMEOUT_MS),
+  });
+
+  if (!res.ok) return null;
+
+  return (await res.json()) as T;
+}
 
 async function apiFetch<T>(path: string): Promise<T | null> {
+  // Ağ hatası veya zaman aşımında bir kez daha denenir; kalıcı hatada sayfa
+  // yedek metinlerle çizilir, istek askıda kalmaz.
   try {
-    const res = await fetch(`${API_BASE_URL}/${path}`);
-    if (!res.ok) return null;
-    return (await res.json()) as T;
+    return await apiRequest<T>(path);
   } catch {
-    return null;
+    try {
+      return await apiRequest<T>(path);
+    } catch {
+      return null;
+    }
   }
 }
 
