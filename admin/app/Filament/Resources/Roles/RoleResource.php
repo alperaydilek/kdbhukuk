@@ -16,6 +16,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
@@ -52,8 +54,18 @@ class RoleResource extends Resource
                     ->columnSpanFull(),
                 CheckboxList::make('permissions')
                     ->label('Erişebileceği Alanlar')
-                    ->relationship('permissions', 'name')
-                    ->options(AccessArea::labels())
+                    // Seçenek değerleri izin kayıtlarının id'si olmalıdır; etiketler
+                    // izin adından Türkçe alan adına çevrilir. Burada ->options() ile
+                    // AccessArea::labels() verilirse değerler id yerine izin adı olur
+                    // ve pivot kaydı "permission_id" sütununa metin yazmaya çalışır.
+                    ->relationship(
+                        'permissions',
+                        'name',
+                        fn (Builder $query) => $query->whereIn('name', AccessArea::all()),
+                    )
+                    ->getOptionLabelFromRecordUsing(
+                        fn (Permission $record) => AccessArea::labels()[$record->name] ?? $record->name,
+                    )
                     ->columns(2)
                     ->columnSpanFull(),
             ]);
