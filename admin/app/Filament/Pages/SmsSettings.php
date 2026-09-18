@@ -32,6 +32,8 @@ class SmsSettings extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'SMS';
 
+    protected static ?string $title = 'SMS Ayarları';
+
     protected static ?int $navigationSort = 3;
 
     public ?array $data = [];

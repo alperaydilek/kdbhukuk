@@ -6,13 +6,13 @@
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
-            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         >
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
         ></script>
@@ -74,8 +74,8 @@
 
     @once
         <script>
-            function kdbMapPicker(config) {
-                return {
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('kdbMapPicker', (config) => ({
                     map: null,
                     marker: null,
                     query: '',
@@ -208,8 +208,8 @@
                             this.searching = false;
                         }
                     },
-                };
-            }
+                }));
+            });
         </script>
     @endonce
 </x-dynamic-component>

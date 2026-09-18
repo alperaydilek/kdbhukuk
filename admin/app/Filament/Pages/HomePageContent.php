@@ -35,6 +35,8 @@ class HomePageContent extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'Ana Sayfa İçeriği';
 
+    protected static ?string $title = 'Ana Sayfa İçeriği';
+
     protected static ?int $navigationSort = 0;
 
     public ?array $data = [];

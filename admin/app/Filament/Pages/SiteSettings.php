@@ -31,6 +31,8 @@ class SiteSettings extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'Site Bilgileri';
 
+    protected static ?string $title = 'Site Bilgileri';
+
     protected static ?int $navigationSort = 1;
 
     public ?array $data = [];

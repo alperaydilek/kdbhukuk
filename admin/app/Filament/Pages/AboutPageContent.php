@@ -35,6 +35,8 @@ class AboutPageContent extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'Hakkımızda İçeriği';
 
+    protected static ?string $title = 'Hakkımızda Sayfası İçeriği';
+
     protected static ?int $navigationSort = 1;
 
     public ?array $data = [];

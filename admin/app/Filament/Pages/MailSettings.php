@@ -33,6 +33,8 @@ class MailSettings extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'E-posta (Google Mail)';
 
+    protected static ?string $title = 'E-posta Ayarları (Google Mail)';
+
     protected static ?int $navigationSort = 2;
 
     public ?array $data = [];

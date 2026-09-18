@@ -37,6 +37,8 @@ class AiSettings extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'Yapay Zekâ';
 
+    protected static ?string $title = 'Yapay Zekâ Ayarları';
+
     protected static ?int $navigationSort = 4;
 
     public ?array $data = [];

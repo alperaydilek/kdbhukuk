@@ -32,6 +32,8 @@ class ContactPageContent extends Page implements HasSchemas
 
     protected static ?string $navigationLabel = 'İletişim Sayfası İçeriği';
 
+    protected static ?string $title = 'İletişim Sayfası İçeriği';
+
     protected static ?int $navigationSort = 5;
 
     public ?array $data = [];
